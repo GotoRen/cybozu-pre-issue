@@ -30,5 +30,5 @@ $ make
 .env >> DEBUG_MODE: true/false
 
 ### 読み込みファイルの切り替え
-tests >> 01_input.txt ~ 05_input.txt
+tests >> FILE: 01_input.txt ~ 05_input.txt
 ```
