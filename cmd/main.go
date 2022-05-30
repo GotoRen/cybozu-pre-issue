@@ -24,10 +24,15 @@ func main() {
 	obj_path := fmt.Sprintf("tests/" + os.Getenv("FILE"))
 	logger.LogDebug("[DEBUG]", "Input file path", obj_path)
 
+	out_path := fmt.Sprintf("articles/" + "out_" + os.Getenv("FILE"))
+	logger.LogDebug("[DEBUG]", "Output file path", out_path)
+
+	// Input
 	fp, err := os.Open(obj_path)
 	if err != nil {
 		logger.LogErr("Failed to open and read input text", "error", err)
 	}
+	r := bufio.NewReaderSize(fp, 4096)
 	defer fp.Close()
 
 	elem := &internal.Element{
@@ -39,9 +44,9 @@ func main() {
 	elem.Writer()
 
 	// Ref: https://qiita.com/ren510dev/items/38fe6d09831d08fde537
-	reader := bufio.NewReaderSize(fp, 4096)
+
 	for {
-		line, _, err := reader.ReadLine()
+		line, _, err := r.ReadLine()
 		if err == io.EOF {
 			break
 		} else if err != nil {

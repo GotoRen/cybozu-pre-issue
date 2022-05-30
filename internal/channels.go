@@ -25,7 +25,6 @@ func (elem *Element) RoutineWriter() {
 	for raw := range elem.Outbound {
 		raw.Lock() // Lock-3
 		fmt.Println(hex.Dump(raw.Buffer))
-		// fmt.Println(string(raw.Buffer))
 		raw.Unlock() // UnLock-2
 	}
 }

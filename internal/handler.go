@@ -21,10 +21,10 @@ type Element struct {
 
 // SHA256Converter calls RoutineConvert2SHA256 as a goroutine.
 func (elem *Element) SHA256Converter() {
-	// start workers
+	// start worker threads.
 	cpus := runtime.NumCPU()
 
-	// One for each RoutineConvert2SHA256.
+	// one for each RoutineConvert2SHA256.
 	elem.Wg.Add(cpus)
 
 	for i := 0; i < cpus; i++ {
