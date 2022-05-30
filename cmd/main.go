@@ -20,18 +20,16 @@ func init() {
 
 func main() {
 	logger.InitZap()
-
 	obj_path := fmt.Sprintf("tests/" + os.Getenv("FILE"))
 	logger.LogDebug("[DEBUG]", "Input file path", obj_path)
-
-	out_path := fmt.Sprintf("articles/" + "out_" + os.Getenv("FILE"))
-	logger.LogDebug("[DEBUG]", "Output file path", out_path)
 
 	// Input
 	fp, err := os.Open(obj_path)
 	if err != nil {
 		logger.LogErr("Failed to open and read input text", "error", err)
 	}
+
+	// Ref: https://qiita.com/ren510dev/items/38fe6d09831d08fde537
 	r := bufio.NewReaderSize(fp, 4096)
 	defer fp.Close()
 
@@ -42,8 +40,6 @@ func main() {
 
 	elem.SHA256Converter()
 	elem.Writer()
-
-	// Ref: https://qiita.com/ren510dev/items/38fe6d09831d08fde537
 
 	for {
 		line, _, err := r.ReadLine()
