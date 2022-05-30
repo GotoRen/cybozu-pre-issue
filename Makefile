@@ -6,10 +6,12 @@ GOTEST=$(GOCMD) test
 GOGET=$(GOCMD) get
 GODOC=$(GOCMD)doc
 
+
 all: build run
 
 build: ## go build
 	$(GOBUILD) ./cmd/main.go 
+	
 run: ## go run
 	./main
 
