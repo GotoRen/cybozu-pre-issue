@@ -1,0 +1,10 @@
+{"level":"error","timestamp":1653933152.7573812,"msg":"Ignored key without a value.","ignored":"tests/01_input.txt"}
+{"level":"debug","timestamp":1653933152.757358,"msg":"Input file path"}
+{"level":"debug","timestamp":1653933194.0808508,"msg":"Get files","Input file path":"tests/01_input.txt"}
+{"level":"debug","timestamp":1653933204.223336,"msg":"Get files","Input file path":"tests/01_input.txt"}
+{"level":"debug","timestamp":1653933223.262947,"msg":"[DEBUG]","Input file path":"tests/01_input.txt"}
+{"level":"debug","timestamp":1653933235.817603,"msg":"[DEBUG]","Input file path":"tests/01_input.txt"}
+{"level":"debug","timestamp":1653933238.699061,"msg":"[DEBUG]","Input file path":"tests/01_input.txt"}
+{"level":"debug","timestamp":1653933255.663532,"msg":"[DEBUG]","Input file path":"tests/01_input.txt"}
+{"level":"debug","timestamp":1653933483.32446,"msg":"[DEBUG]","Input file path":"tests/01_input.txt"}
+{"level":"debug","timestamp":1653933502.175646,"msg":"[DEBUG]","Input file path":"tests/01_input.txt"}
