@@ -91,3 +91,5 @@
 {"level":"debug","timestamp":1653938915.797927,"msg":"[DEBUG]","Output file path":"articles/out_05_input.txt"}
 {"level":"debug","timestamp":1653938926.846543,"msg":"[DEBUG]","Input file path":"tests/01_input.txt"}
 {"level":"debug","timestamp":1653938926.8466098,"msg":"[DEBUG]","Output file path":"articles/out_01_input.txt"}
+{"level":"debug","timestamp":1653940441.718715,"msg":"[DEBUG]","Input file path":"tests/01_input.txt"}
+{"level":"debug","timestamp":1653940446.00734,"msg":"[DEBUG]","Input file path":"tests/01_input.txt"}
