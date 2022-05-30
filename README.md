@@ -21,6 +21,7 @@ Cyboze 事前課題：[https://cybozu.co.jp/company/job/recruitment/intern/infra
 $ git clone https://github.com/GotoRen/cyboze_pre_issue.git
 
 ### 実行
+$ cd cyboze_pre_issue/
 $ make
 
 ### デバッグモードの切り替え
