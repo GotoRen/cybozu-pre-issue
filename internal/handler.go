@@ -1,32 +1,48 @@
 package internal
 
 import (
-	"crypto/sha256"
-	"encoding/hex"
-	"fmt"
+	"runtime"
 	"sync"
 )
 
-func (elem *Element) Convert2SHA256() {
-	defer elem.Wg.Done()
+// Type of struct: InputText -> Stored in structure
+type Data struct {
+	Text   []byte
+	Buffer []byte
+	sync.Mutex
+}
 
-	for raw := range elem.Inbound {
-		checksum := sha256.Sum256([]byte(raw.Text))
-		// checksum := []byte(elem.Text)
-		raw.Buffer = checksum[:]
-		raw.Unlock()
+// Type of struct: InboundChannels -> RoutineProcessing -> OutboundChannels
+type Element struct {
+	Inbound  chan *Data
+	Outbound chan *Data
+	Wg       sync.WaitGroup
+}
+
+// SHA256Converter calls RoutineConvert2SHA256 as a goroutine.
+func (elem *Element) SHA256Converter() {
+	// start workers
+	cpus := runtime.NumCPU()
+
+	// One for each RoutineConvert2SHA256.
+	elem.Wg.Add(cpus)
+
+	for i := 0; i < cpus; i++ {
+		go elem.RoutineConvert2SHA256()
 	}
 }
 
-func Write(outc chan *Data, w *sync.WaitGroup) {
-	defer w.Done()
+// Writer calls RoutineWriter as a goroutine.
+func (elem *Element) Writer() {
+	elem.Wg.Add(1)
+	go elem.RoutineWriter()
+}
 
-	for elme := range outc {
-		elme.Lock()
-
-		fmt.Println(hex.Dump(elme.Buffer))
-		// fmt.Println(string(elme.Buffer))
-
-		elme.Unlock()
+// PutData places the received data.
+func PutData(b []byte) (datum Data) {
+	datum = Data{
+		Text:   b,
+		Buffer: nil,
 	}
+	return
 }

@@ -1,34 +1,31 @@
 package internal
 
 import (
-	"runtime"
-	"sync"
+	"crypto/sha256"
+	"encoding/hex"
+	"fmt"
 )
 
-type Data struct {
-	Text   string
-	Buffer []byte
-	sync.Mutex
-}
+// RoutineConvert2SHA256 calculates the checksum in SHA256 for data stored in InboundChannels.
+func (elem *Element) RoutineConvert2SHA256() {
+	defer elem.Wg.Done()
 
-type Element struct {
-	Inbound  chan *Data
-	Outbound chan *Data
-	Wg       sync.WaitGroup
-}
-
-func (elem *Element) RoutineSHA256Converter() {
-	// start workers
-	cpus := runtime.NumCPU()
-
-	elem.Wg.Add(cpus) // One for each RoutineSHA256Converter.
-
-	for i := 0; i < cpus; i++ {
-		go elem.Convert2SHA256()
+	for raw := range elem.Inbound {
+		checksum := sha256.Sum256(raw.Text)
+		// checksum := raw.Text
+		raw.Buffer = checksum[:]
+		raw.Unlock() // UnLock-1
 	}
 }
 
+// RoutineWriter outputs the data stored in OutboundChannels with HEX-Dump.
 func (elem *Element) RoutineWriter() {
-	elem.Wg.Add(1)
-	go Write(elem.Outbound, &elem.Wg)
+	defer elem.Wg.Done()
+
+	for raw := range elem.Outbound {
+		raw.Lock() // Lock-3
+		fmt.Println(hex.Dump(raw.Buffer))
+		// fmt.Println(string(raw.Buffer))
+		raw.Unlock() // UnLock-2
+	}
 }

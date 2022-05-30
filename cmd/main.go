@@ -3,8 +3,8 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
-	"sync"
 
 	"github.com/GotoRen/cyboze_pre_issue/internal"
 	"github.com/GotoRen/cyboze_pre_issue/internal/logger"
@@ -24,33 +24,33 @@ func main() {
 	obj_path := fmt.Sprintf("tests/" + os.Getenv("FILE"))
 	logger.LogDebug("[DEBUG]", "Input file path", obj_path)
 
-	f, err := os.Open(obj_path)
+	fp, err := os.Open(obj_path)
 	if err != nil {
 		logger.LogErr("Failed to open and read input text", "error", err)
 	}
-	defer f.Close()
+	defer fp.Close()
 
 	elem := &internal.Element{
 		Inbound:  make(chan *internal.Data),
 		Outbound: make(chan *internal.Data),
 	}
 
-	elem.RoutineSHA256Converter()
-	elem.RoutineWriter()
+	elem.SHA256Converter()
+	elem.Writer()
 
-	// ref: https://qiita.com/ren510dev/items/38fe6d09831d08fde537
-	sc := bufio.NewScanner(f)
-	for sc.Scan() {
-		line := sc.Text()
-
-		// fmt.Println(line)
-		data := internal.Data{
-			Text:   line,
-			Buffer: nil,
-			Mutex:  sync.Mutex{},
+	// Ref: https://qiita.com/ren510dev/items/38fe6d09831d08fde537
+	reader := bufio.NewReaderSize(fp, 4096)
+	for {
+		line, _, err := reader.ReadLine()
+		if err == io.EOF {
+			break
+		} else if err != nil {
+			logger.LogErr("Failed to read the row", "error", err)
 		}
-		data.Lock()
 
+		data := internal.PutData(line)
+
+		data.Lock() // Lock-1
 		elem.Inbound <- &data
 		elem.Outbound <- &data
 	}
