@@ -11,8 +11,6 @@ Cyboze 事前課題：[https://cybozu.co.jp/company/job/recruitment/intern/infra
 
 処理の内容は行データのSHA256チェックサムのHEXダンプとします.
 
-提出はsecret gist のリンクを推奨する.
-
 ## 📝 Requirement
 
 | Language/FrameWork | Version |
