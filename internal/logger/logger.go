@@ -51,7 +51,7 @@ func InitZap() {
 
 // setFile return the location where the log file will be placed.
 func setFile() (f *os.File) {
-	dirPath := "log/"
+	dirPath := "logs/"
 	fileName := "log.json"
 	content := filepath.Join(dirPath, fileName)
 
