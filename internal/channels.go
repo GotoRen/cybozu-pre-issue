@@ -1,30 +1,78 @@
 package internal
 
 import (
-	"crypto/sha256"
-	"encoding/hex"
-	"fmt"
+	"sync"
 )
 
-// RoutineConvert2SHA256 calculates the checksum in SHA256 for data stored in InboundChannels.
-func (elem *Element) RoutineConvert2SHA256() {
-	defer elem.Wg.Done()
-
-	for raw := range elem.Inbound {
-		checksum := sha256.Sum256(raw.Buffer)
-		// checksum := raw.Text
-		raw.Buffer = checksum[:]
-		raw.Unlock() // UnLock-1
-	}
+type outboundQueue struct {
+	c  chan *QueueOutboundElement
+	wg sync.WaitGroup
 }
 
-// RoutineWriter outputs the data stored in OutboundChannels with HEX-Dump.
-func (elem *Element) RoutineWrite() {
-	defer elem.Wg.Done()
-
-	for raw := range elem.Outbound {
-		raw.Lock() // Lock-3
-		fmt.Println(hex.Dump(raw.Buffer))
-		raw.Unlock() // UnLock-2
+func newOutboundQueue() *outboundQueue {
+	q := &outboundQueue{
+		c: make(chan *QueueOutboundElement, QueueOutboundSize),
 	}
+	q.wg.Add(1)
+
+	go func() {
+		q.wg.Wait()
+		close(q.c)
+	}()
+
+	return q
+}
+
+type inboundQueue struct {
+	c  chan *QueueInboundElement
+	wg sync.WaitGroup
+}
+
+func newInboundQueue() *inboundQueue {
+	q := &inboundQueue{
+		c: make(chan *QueueInboundElement, QueueInboundSize),
+	}
+	q.wg.Add(1)
+
+	go func() {
+		q.wg.Wait()
+		close(q.c)
+	}()
+
+	return q
+}
+
+type QueueInboundElement struct {
+	sync.Mutex
+	buffer   *[MaxMessageSize]byte
+	data     []byte
+	checksum [32]byte
+}
+
+type QueueOutboundElement struct {
+	sync.Mutex
+	buffer   *[MaxMessageSize]byte
+	data     []byte
+	checksum [32]byte
+}
+
+// PopulatePools creates new buffers.
+func (raw *Raw) PopulatePools() {
+	raw.pool.messageBuffers = NewWaitPool(PreallocatedBuffersPerPool, func() interface{} {
+		return new([MaxMessageSize]byte)
+	})
+	raw.pool.inboundElements = NewWaitPool(PreallocatedBuffersPerPool, func() interface{} {
+		return new(QueueInboundElement)
+	})
+	raw.pool.outboundElements = NewWaitPool(PreallocatedBuffersPerPool, func() interface{} {
+		return new(QueueOutboundElement)
+	})
+}
+
+// NewWaitPool initializes wait pool.
+func NewWaitPool(max uint32, newFunc func() interface{}) *WaitPool {
+	p := &WaitPool{pool: sync.Pool{New: newFunc}, max: max}
+	p.cond = sync.Cond{L: &p.lock}
+
+	return p
 }
