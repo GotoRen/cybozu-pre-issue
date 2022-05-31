@@ -35,7 +35,7 @@ func (elem *Element) SHA256Converter() {
 // Writer calls RoutineWriter as a goroutine.
 func (elem *Element) Writer() {
 	elem.Wg.Add(1)
-	go elem.RoutineWriter()
+	go elem.RoutineWrite()
 }
 
 // PutData places the received data.

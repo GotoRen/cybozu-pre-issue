@@ -19,7 +19,7 @@ func (elem *Element) RoutineConvert2SHA256() {
 }
 
 // RoutineWriter outputs the data stored in OutboundChannels with HEX-Dump.
-func (elem *Element) RoutineWriter() {
+func (elem *Element) RoutineWrite() {
 	defer elem.Wg.Done()
 
 	for raw := range elem.Outbound {

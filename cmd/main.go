@@ -38,6 +38,7 @@ func main() {
 		Outbound: make(chan *internal.Data),
 	}
 
+	// routine start.
 	elem.SHA256Converter()
 	elem.Writer()
 
