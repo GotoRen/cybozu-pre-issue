@@ -20,11 +20,15 @@ func init() {
 
 func main() {
 	logger.InitZap()
+
+	var err error
+	var fp *os.File
+
 	obj_path := fmt.Sprintf("tests/" + os.Getenv("FILE"))
 	logger.LogDebug("[DEBUG]", "Input file path", obj_path)
 
 	// Input
-	fp, err := os.Open(obj_path)
+	fp, err = os.Open(obj_path)
 	if err != nil {
 		logger.LogErr("Failed to open and read input text", "error", err)
 	}
@@ -42,19 +46,22 @@ func main() {
 	elem.SHA256Converter()
 	elem.Writer()
 
+	var data *internal.Data // Virtual IP Packet
 	for {
-		line, _, err := r.ReadLine()
+		data = internal.NewInboundElement()
+		data.Text, _, err = r.ReadLine()
 		if err == io.EOF {
 			break
 		} else if err != nil {
 			logger.LogErr("Failed to read the row", "error", err)
 		}
 
-		data := internal.PutData(line)
+		// data := internal.PutData(d.)
 
-		data.Lock() // Lock-1
-		elem.Inbound <- &data
-		elem.Outbound <- &data
+		data.Mutex.Lock() // Lock-1
+		elem.Inbound <- data
+		elem.Outbound <- data
+		data = nil
 	}
 
 	close(elem.Inbound)
