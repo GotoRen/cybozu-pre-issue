@@ -1,6 +1,6 @@
 # cyboze_pre_issue
 [![Go](https://github.com/GotoRen/cyboze_pre_issue/actions/workflows/go.yml/badge.svg)](https://github.com/GotoRen/cyboze_pre_issue/actions/workflows/go.yml)
-[![Language](https://img.shields.io/badge/Go-1.18.0-blue.svg)](https://github.com/Pluslab/cyphonic)
+[![Language](https://img.shields.io/badge/Go-1.18.0-blue.svg)](https://github.com/GotoRen/cyboze_pre_issue)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 ## ⚡️ Concept of this project
