@@ -6,17 +6,16 @@ import (
 )
 
 // Type of struct: InputText -> Stored in structure
-type Data struct {
-	Text   []byte
-	Buffer []byte
+type Raw struct {
 	sync.Mutex
+	Buffer []byte
 }
 
 // Type of struct: InboundChannels -> RoutineProcessing -> OutboundChannels
 type Element struct {
-	Inbound  chan *Data
-	Outbound chan *Data
 	Wg       sync.WaitGroup
+	Inbound  chan *Raw
+	Outbound chan *Raw
 }
 
 // SHA256Converter calls RoutineConvert2SHA256 as a goroutine.
@@ -36,13 +35,4 @@ func (elem *Element) SHA256Converter() {
 func (elem *Element) Writer() {
 	elem.Wg.Add(1)
 	go elem.RoutineWrite()
-}
-
-// PutData places the received data.
-func PutData(b []byte) (datum Data) {
-	datum = Data{
-		Text:   b,
-		Buffer: nil,
-	}
-	return
 }
