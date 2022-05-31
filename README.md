@@ -32,3 +32,9 @@ $ make
 ### 読み込みファイルの切り替え
 tests >> FILE: 01_input.txt ~ 05_input.txt
 ```
+
+## Project managers
+
+- [Issues](https://github.com/GotoRen/cyboze_pre_issue/issues)
+- [Pull Request](https://github.com/GotoRen/cyboze_pre_issue/pulls)
+- [Projects](https://github.com/GotoRen/cyboze_pre_issue/projects/1)
