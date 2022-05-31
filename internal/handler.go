@@ -5,6 +5,17 @@ import (
 	"sync"
 )
 
+// Bit16 is bit length, QueueSize defines the size of queue.
+const (
+	Bit16                      = 16
+	QueueInboundSize           = 1024
+	QueueOutboundSize          = 1024
+	PreallocatedBuffersPerPool = 0 // Disable and allow for infinite memory growth
+)
+
+// MaxMessageSize is 65535=(2^16)-1.
+const MaxMessageSize = (1 << Bit16) - 1
+
 // Type of struct: InputText -> Stored in structure
 type Raw struct {
 	sync.Mutex
@@ -35,4 +46,9 @@ func (elem *Element) SHA256Converter() {
 func (elem *Element) Writer() {
 	elem.Wg.Add(1)
 	go elem.RoutineWrite()
+}
+
+// ClearPointers clears the reserved memory area.
+func (raw *Raw) ClearPointers() {
+	raw = nil
 }

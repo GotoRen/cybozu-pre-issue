@@ -20,6 +20,7 @@ func init() {
 
 func main() {
 	logger.InitZap()
+
 	obj_path := fmt.Sprintf("tests/" + os.Getenv("FILE"))
 	logger.LogDebug("[DEBUG]", "Input file path", obj_path)
 
@@ -43,20 +44,18 @@ func main() {
 	elem.Writer()
 
 	for {
-		line, _, err := r.ReadLine()
+		raw := new(internal.Raw)
+		raw.Buffer, _, err = r.ReadLine()
 		if err == io.EOF {
 			break
 		} else if err != nil {
-			logger.LogErr("Failed to read the row", "error", err)
-		}
-
-		raw := internal.Raw{
-			Buffer: line,
+			logger.LogErr("Failed to read the raw", "error", err)
 		}
 
 		raw.Lock() // Lock-1
-		elem.Inbound <- &raw
-		elem.Outbound <- &raw
+		elem.Inbound <- raw
+		elem.Outbound <- raw
+		raw.ClearPointers()
 	}
 
 	close(elem.Inbound)
