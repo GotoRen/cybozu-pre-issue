@@ -200,4 +200,4 @@ terraform.rc
 main
 
 # log files
-logs/*
+log.json
