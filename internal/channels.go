@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"os"
 )
 
 // RoutineConvert2SHA256 calculates the checksum in SHA256 for data stored in InboundChannels.
@@ -12,9 +13,8 @@ func (elem *Element) RoutineConvert2SHA256() {
 
 	for raw := range elem.Inbound {
 		checksum := sha256.Sum256(raw.Text)
-		// checksum := raw.Text
 		raw.Buffer = checksum[:]
-		raw.Unlock() // UnLock-1
+		raw.Mu.Unlock() // UnLock-1
 	}
 }
 
@@ -23,8 +23,9 @@ func (elem *Element) RoutineWrite() {
 	defer elem.Wg.Done()
 
 	for raw := range elem.Outbound {
-		raw.Lock() // Lock-3
-		fmt.Println(hex.Dump(raw.Buffer))
-		raw.Unlock() // UnLock-2
+		raw.Mu.Lock() // Lock-2
+		fmt.Fprintln(os.Stdout, "raw text:", string(raw.Text))
+		fmt.Fprintln(os.Stdout, hex.Dump(raw.Buffer))
+		raw.Mu.Unlock() // UnLock-2
 	}
 }

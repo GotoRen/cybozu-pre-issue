@@ -1,19 +1,20 @@
-// Package logger contains logging tools.
+// Package logger provides logger methods.
+//
+//nolint:gomnd
 package logger
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
-	"strconv"
 
+	local "github.com/GotoRen/cybozu-pre-issue/pkg/config"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
 
 // InitZap provides logging with zap.
-func InitZap() {
+func InitZap(cfg *local.Config) error {
 	logLevel := zap.NewAtomicLevelAt(zapcore.DebugLevel)
 
 	// Standard output
@@ -23,10 +24,15 @@ func InitZap() {
 		logLevel,
 	)
 
+	f, err := setFile()
+	if err != nil {
+		return err
+	}
+
 	// Output as a log file
 	logCore := zapcore.NewCore(
 		zapcore.NewJSONEncoder(config()),
-		zapcore.AddSync(setFile()),
+		zapcore.AddSync(f),
 		logLevel,
 	)
 
@@ -34,12 +40,7 @@ func InitZap() {
 		logCore,
 	))
 
-	dm, ok := strconv.ParseBool(os.Getenv("DEBUG_MODE"))
-	if ok != nil {
-		fmt.Printf("load .env file error: %v\n", ok)
-	}
-
-	if dm {
+	if cfg.DebugMode {
 		logger = zap.New(zapcore.NewTee(
 			stdCore,
 			logCore,
@@ -47,10 +48,12 @@ func InitZap() {
 	}
 
 	zap.ReplaceGlobals(logger)
+
+	return nil
 }
 
 // setFile return the location where the log file will be placed.
-func setFile() (f *os.File) {
+func setFile() (*os.File, error) {
 	dirPath := "logs/"
 	fileName := "log.json"
 	content := filepath.Join(dirPath, fileName)
@@ -58,17 +61,17 @@ func setFile() (f *os.File) {
 	if _, err := os.Stat(content); err != nil {
 		if os.IsNotExist(err) {
 			if _, err := os.Create(content); err != nil {
-				fmt.Println(err)
+				return nil, fmt.Errorf("failed to create the logging file: %w", err)
 			}
 		}
 	}
 
 	f, err := os.OpenFile(content, os.O_APPEND|os.O_WRONLY, 0o600)
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("failed to open the logging file: %w", err)
 	}
 
-	return f
+	return f, nil
 }
 
 // config returns EncoderConfig for production environments.

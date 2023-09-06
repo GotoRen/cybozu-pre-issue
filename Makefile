@@ -5,16 +5,29 @@ GOCLEAN=$(GOCMD) clean
 GOTEST=$(GOCMD) test
 GOGET=$(GOCMD) get
 GODOC=$(GOCMD)doc
+GOLANGCI=golangci-lint
 
 
-all: build run
+all: env/apply run
 
+.PHONY: build
 build: ## go build
 	$(GOBUILD) ./cmd/main.go
 
-run: ## go run
-	./main
 
+.PHONY: run
+run: env/apply ## go run
+	$(GORUN) ./cmd/main.go
+
+.PHONY: env/apply
+env/apply: ## apply environment variables
+	@direnv allow
+
+.PHONY: lint
+lint: ## golang-ci lint
+	$(GOLANGCI) run --config=.golangci.yaml ./...
+
+.PHONY: doc
 doc: ## godoc http:6060
 	$(GODOC) -http=:6060
 
