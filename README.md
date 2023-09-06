@@ -3,7 +3,7 @@
 [![License](https://img.shields.io/badge/license-MIT-orange.svg)](https://opensource.org/licenses/MIT)
 [![Go](https://img.shields.io/badge/Go-1.21.0-blue.svg)](https://tip.golang.org/doc/go1.21)
 
-[![Go](https://github.com/GotoRen/cybozu-pre-issue/actions/workflows/go.yml/badge.svg)](https://github.com/GotoRen/cybozu-pre-issue/actions/workflows/go.yml)
+[![reviewdog](https://github.com/GotoRen/cybozu-pre-issue/actions/workflows/reviewdog.yaml/badge.svg)](https://github.com/GotoRen/cybozu-pre-issue/actions/workflows/reviewdog.yaml)
 
 ## Concept of this project
 
