@@ -2,14 +2,14 @@ package internal
 
 import "sync"
 
-// Data struct: InputText -> Stored in structure.
+// Data: InputText -> Stored in structure.
 type Data struct {
 	Text   []byte
 	Buffer []byte
 	Mu     sync.Mutex
 }
 
-// Elementstruct: InboundChannels -> RoutineProcessing -> OutboundChannels.
+// Element: InboundChannels -> RoutineProcessing -> OutboundChannels.
 type Element struct {
 	Inbound  chan *Data
 	Outbound chan *Data
